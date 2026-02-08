@@ -10,10 +10,12 @@ A Chrome extension that automatically skips YouTube ads when the skip button bec
 
 ## Installation
 
-1. Open Chrome and navigate to `chrome://extensions/`
-2. Enable "Developer mode" in the top right corner
-3. Click "Load unpacked"
-4. Select the `Youtube-Helper-Chrome-Plugin-base` folder from this repository
+1. Download the latest release from [Releases](https://github.com/ajoealex/Youtube-Helper-Chrome-Plugin/releases)
+2. Extract the zip file
+3. Open Chrome and navigate to `chrome://extensions/`
+4. Enable "Developer mode" in the top right corner
+5. Click "Load unpacked"
+6. Select the extracted folder
 
 ## How It Works
 
@@ -32,7 +34,7 @@ The extension uses two main mechanisms:
 ## Project Structure
 
 ```
-Youtube-Helper-Chrome-Plugin-base/
+extension/
   manifest.json    # Extension manifest
   background.js    # Service worker for handling debugger clicks
   content.js       # Content script for ad detection
