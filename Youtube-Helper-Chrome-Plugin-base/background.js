@@ -39,7 +39,10 @@ async function updateBadgeState(enabled) {
   if (enabled) {
     const stats = await getStats();
     updateBadgeCount(stats.todayAdsBlocked);
+    // Always use red icon when enabled
+    chrome.action.setIcon({ path: ICON_ACTIVE });
   } else {
+    // Gray icon only when disabled
     chrome.action.setBadgeBackgroundColor({ color: '#888888' });
     chrome.action.setBadgeText({ text: 'OFF' });
     chrome.action.setIcon({ path: ICON_INACTIVE });
@@ -96,7 +99,7 @@ function updateBadgeCount(count) {
   const text = count > 0 ? String(count) : '';
   chrome.action.setBadgeBackgroundColor({ color: '#4CAF50' });
   chrome.action.setBadgeText({ text: text });
-  chrome.action.setIcon({ path: ICON_ACTIVE });
+  // Don't set icon here - icon state is managed separately per-tab
 }
 
 // ============================================================
@@ -139,23 +142,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   const tabId = sender.tab.id;
 
-  // Handle ad state changes
+  // Handle ad state changes (icon stays red, no change needed)
   if (message.action === "adDetected") {
-    isEnabled().then(enabled => {
-      if (enabled) {
-        setIconActive(tabId, true);
-      }
-    });
     sendResponse({ success: true });
     return;
   }
 
   if (message.action === "adCleared") {
-    isEnabled().then(enabled => {
-      if (enabled) {
-        setIconActive(tabId, false);
-      }
-    });
     sendResponse({ success: true });
     return;
   }
@@ -181,7 +174,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       const { x, y } = message.coordinates;
       try {
         await dispatchTrustedClick(tabId, x, y);
-        blinkBadge(tabId);
+        blinkBadge();
         sendResponse({ success: true });
       } catch (err) {
         sendResponse({ success: false, error: err.message });
@@ -190,14 +183,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
   }
 });
-
-// Set the icon to active (color) or inactive (grayscale)
-function setIconActive(tabId, active) {
-  chrome.action.setIcon({
-    tabId,
-    path: active ? ICON_ACTIVE : ICON_INACTIVE,
-  });
-}
 
 async function dispatchTrustedClick(tabId, x, y) {
   // Attach debugger if not already attached
@@ -232,22 +217,22 @@ async function dispatchTrustedClick(tabId, x, y) {
   attachedTabs.delete(tabId);
 }
 
-// Blink the extension badge when an ad is skipped
-function blinkBadge(tabId) {
+// Blink the extension badge when an ad is skipped (uses global badge, not per-tab)
+function blinkBadge() {
   let visible = true;
   let blinks = 0;
   const maxBlinks = 6;
 
-  chrome.action.setBadgeBackgroundColor({ color: "#FF0000", tabId });
+  chrome.action.setBadgeBackgroundColor({ color: "#2196F3" }); // Blue color
 
   const interval = setInterval(() => {
     if (blinks >= maxBlinks) {
       clearInterval(interval);
-      // Restore the count badge after blinking
+      // Restore the count badge
       getStats().then(stats => updateBadgeCount(stats.todayAdsBlocked));
       return;
     }
-    chrome.action.setBadgeText({ text: visible ? "SKIP" : "", tabId });
+    chrome.action.setBadgeText({ text: visible ? "SKIP" : "" });
     visible = !visible;
     blinks++;
   }, 300);
