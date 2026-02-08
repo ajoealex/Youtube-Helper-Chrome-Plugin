@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Ad Skipper</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-left">
+        <img src="icons/icon48.png" alt="Logo" class="logo">
+        <h1>Ad Skipper</h1>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="enableToggle" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </header>
+
+    <div class="metrics">
+      <div class="tile tile-total">
+        <span class="tile-value" id="totalAds">0</span>
+        <span class="tile-label">Total Blocked</span>
+      </div>
+      <div class="tile tile-today">
+        <span class="tile-value" id="todayAds">0</span>
+        <span class="tile-label">Today</span>
+      </div>
+    </div>
+
+    <div class="list-section">
+      <div class="list-header">
+        <h2>Recent Ads Blocked</h2>
+        <button id="clearBtn" class="clear-btn" title="Clear all stats">Clear</button>
+      </div>
+      <div class="ad-list" id="adList">
+        <div class="empty-state">No ads blocked yet</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
