@@ -32,7 +32,7 @@ The extension uses two main mechanisms:
 ## Project Structure
 
 ```
-extension/
+Youtube-Helper-Chrome-Plugin/
   manifest.json    # Extension manifest
   background.js    # Service worker for handling debugger clicks
   content.js       # Content script for ad detection
